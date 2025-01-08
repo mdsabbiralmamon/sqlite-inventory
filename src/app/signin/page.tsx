@@ -2,50 +2,56 @@
 
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import { signIn } from "next-auth/react"; // Import signIn
+import { signIn } from "next-auth/react";
+import { toast, ToastContainer } from "react-toastify";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
-
+  
     try {
-      // Using next-auth's signIn method to authenticate the user
       const res = await signIn("credentials", {
-        redirect: false,  // Don't redirect automatically
+        redirect: false,
         email,
         password,
       });
-
+  
       if (res?.error) {
-        setError(res.error || "Something went wrong. Please try again.");
+        toast.error(res.error || "Something went wrong. Please try again.", {
+          autoClose: 3000, // Duration for the error toast
+        });
       } else {
-        // Redirect to the dashboard on successful login
-        alert("Login successful!");
-        router.push("/dashboard");
+        toast.success("Login successful!", {
+          autoClose: 3000, // Duration for the success toast
+        });
+  
+        // Delay navigation by 3 seconds to allow the toast to be visible
+        setTimeout(() => {
+          router.push("/dashboard");
+        }, 3000);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred.");
+      const errorMessage = err instanceof Error ? err.message : "An error occurred.";
+      toast.error(errorMessage, {
+        autoClose: 3000, // Duration for the error toast
+      });
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <div className="bg-white p-8 shadow-lg rounded-lg w-full max-w-md">
-        <h1 className="text-2xl font-bold text-center mb-6 text-blue-600">Sign In</h1>
-        {error && (
-          <div className="bg-red-100 text-red-700 p-3 mb-4 rounded">
-            {error}
-          </div>
-        )}
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500">
+      <ToastContainer />
+      <div className="bg-white bg-opacity-80 backdrop-blur-lg p-8 shadow-2xl rounded-lg w-full max-w-md">
+        <h1 className="text-3xl font-extrabold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+          Welcome Back
+        </h1>
         <form onSubmit={handleSignIn}>
           <div className="mb-4">
-            <label htmlFor="email" className="block text-gray-700 font-medium">
+            <label htmlFor="email" className="block text-gray-700 font-semibold">
               Email
             </label>
             <input
@@ -53,16 +59,13 @@ const SignIn = () => {
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 p-2 w-full border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-200"
+              className="mt-1 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your email"
               required
             />
           </div>
           <div className="mb-4">
-            <label
-              htmlFor="password"
-              className="block text-gray-700 font-medium"
-            >
+            <label htmlFor="password" className="block text-gray-700 font-semibold">
               Password
             </label>
             <input
@@ -70,21 +73,21 @@ const SignIn = () => {
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 p-2 w-full border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-200"
+              className="mt-1 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your password"
               required
             />
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300"
+            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-lg font-bold text-lg shadow-md hover:opacity-90 focus:outline-none focus:ring-4 focus:ring-purple-300"
           >
             Sign In
           </button>
         </form>
-        <p className="mt-4 text-sm text-center text-gray-600">
+        <p className="mt-4 text-sm text-center text-gray-700">
           Don&apos;t have an account?{" "}
-          <a href="/signup" className="text-blue-600 hover:underline">
+          <a href="/signup" className="text-blue-600 font-medium hover:underline">
             Sign Up
           </a>
         </p>
