@@ -41,4 +41,4 @@ yarn-error.log*
 next-env.d.ts
 
 # database
-/src/database/inventory.db
+# /src/database/inventory.db
