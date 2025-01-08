@@ -5,10 +5,9 @@ export async function middleware(request: NextRequest) {
   const token = await getToken({ req: request });
   const pathname = request.nextUrl.pathname;
 
-  console.log('Token received:', token ? 'Yes' : 'No');
-  if (token) {
-    console.log('Token role:', token.role);
-  }
+  console.log('value token', token);
+  console.log('value path name', pathname);
+  
 
   // Define private routes
   const privateRoutes = [
