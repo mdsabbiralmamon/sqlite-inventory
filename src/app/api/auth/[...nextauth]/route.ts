@@ -1,14 +1,27 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import sqlite3 from "sqlite3";
+import bcrypt from "bcrypt";
+
+// Initialize the database
+const db = new sqlite3.Database("src/database/inventory.db");
+
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+  password: string;
+}
 
 const handler = NextAuth({
   session: {
     strategy: "jwt" as const,
-    maxAge: 30 * 60,
-    updateAge: 5 * 60,
+    maxAge: 30 * 60, // 30 minutes
+    updateAge: 5 * 60, // 5 minutes
   },
   pages: {
-    signIn: "/signin",
+    // signIn: "/signin",
     error: "/auth/error",
   },
   providers: [
@@ -23,46 +36,46 @@ const handler = NextAuth({
           throw new Error("Email and password are required.");
         }
 
-        const res = await fetch(`${process.env.NEXTAUTH_URL}/api/users/manage`, {
-          method: "POST",
-          body: JSON.stringify({
-            email: credentials.email,
-            password: credentials.password,
-          }),
-          headers: { "Content-Type": "application/json" },
+        // Query the database for the user
+        return new Promise((resolve, reject) => {
+          db.get("SELECT * FROM users WHERE email = ?", [credentials.email], async (err, row) => {
+            if (err || !row) {
+              reject(new Error("Invalid email or password."));
+            } else {
+              const user = row as User;
+
+              // Compare the password with the hashed password
+              const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
+              if (isPasswordValid) {
+                resolve({
+                  id: user.id,
+                  name: user.name,
+                  email: user.email,
+                  role: user.role,
+                });
+              } else {
+                reject(new Error("Invalid email or password."));
+              }
+            }
+          });
         });
-
-        const user = await res.json();
-
-        if (!res.ok || !user) {
-          throw new Error(user?.message || "Invalid credentials.");
-        }
-
-        // Return the user object with name, email, and role for the session
-        return {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-        };
       },
     }),
   ],
   callbacks: {
-    // Add custom fields to the JWT token
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id;
+        token.id = typeof token.id === "string" ? Number(token.id) : token.id;
         token.name = user.name;
         token.email = user.email;
         token.role = user.role;
       }
       return token;
     },
-    // Expose additional fields to the session
     async session({ session, token }) {
       if (token) {
-        session.user.id = token.id;
+        // Ensure id is always treated as a number
+        session.user.id = typeof token.id === "string" ? Number(token.id) : token.id;
         session.user.name = token.name;
         session.user.email = token.email;
         session.user.role = token.role;
@@ -73,5 +86,4 @@ const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
 });
 
-// Export the handler for GET and POST methods
 export { handler as GET, handler as POST };
