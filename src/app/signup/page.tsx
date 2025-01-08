@@ -1,6 +1,8 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -9,25 +11,28 @@ const SignUp = () => {
     password: "",
     role: "",
   });
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
 
-  // Explicitly type the event for `handleChange`
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const router = useRouter();
+
+  // Navigate back to dashboard
+  const handleBack = () => {
+    router.push("/dashboard"); // Adjust the path based on your dashboard route
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  // Explicitly type the event for `handleSubmit`
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError("");
-    setSuccess("");
 
     const { name, email, password, role } = formData;
 
     if (!name || !email || !password || !role) {
-      setError("All fields are required.");
+      toast.error("All fields are required.");
       return;
     }
 
@@ -42,29 +47,33 @@ const SignUp = () => {
 
       const result = await response.json();
       if (response.ok) {
-        setSuccess("User registered successfully!");
+        toast.success("User registered successfully!");
         setFormData({ name: "", email: "", password: "", role: "" });
       } else {
-        setError(result.error || "Something went wrong.");
+        toast.error(result.error || "Something went wrong.");
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred.");
+      toast.error("An error occurred. Please try again.");
+      console.log(err);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-blue-50 to-blue-100 flex items-center justify-center px-4">
-      <div className="max-w-md w-full bg-white shadow-lg rounded-lg p-8">
-        <h2 className="text-2xl font-bold text-blue-600 text-center mb-6">
-          Sign Up
-        </h2>
-        {error && (
-          <p className="text-red-500 text-sm text-center mb-4">{error}</p>
-        )}
-        {success && (
-          <p className="text-green-500 text-sm text-center mb-4">{success}</p>
-        )}
-        <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-500 via-blue-500 to-pink-500 p-6">
+      <ToastContainer />
+      <div className="bg-white bg-opacity-80 backdrop-blur-lg rounded-lg shadow-lg w-full max-w-md p-8">
+        <h1 className="text-3xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mb-6">
+          Create an Account
+        </h1>
+        {/* Back Button */}
+        <button
+          onClick={handleBack}
+          className="absolute top-4 left-4 text-white font-semibold py-2 px-4 bg-blue-700 rounded-full hover:bg-blue-800 transform transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none"
+        >
+          &larr; Back
+        </button>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label
               htmlFor="name"
@@ -78,11 +87,12 @@ const SignUp = () => {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your name"
               required
             />
           </div>
+
           <div>
             <label
               htmlFor="email"
@@ -96,11 +106,12 @@ const SignUp = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your email"
               required
             />
           </div>
+
           <div>
             <label
               htmlFor="password"
@@ -114,11 +125,12 @@ const SignUp = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your password"
               required
             />
           </div>
+
           <div>
             <label
               htmlFor="role"
@@ -131,7 +143,7 @@ const SignUp = () => {
               name="role"
               value={formData.role}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               required
             >
               <option value="">Select a role</option>
@@ -139,9 +151,10 @@ const SignUp = () => {
               <option value="user">User</option>
             </select>
           </div>
+
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300"
+            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-lg hover:opacity-90 transition-opacity duration-300"
           >
             Register
           </button>
