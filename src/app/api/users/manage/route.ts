@@ -3,7 +3,7 @@ import sqlite3 from "sqlite3";
 import bcrypt from "bcrypt";
 
 // Initialize the database
-const db = new sqlite3.Database("/tmp/inventory.db");
+const db = new sqlite3.Database("src/database/inventory.db");
 
 // Handler for POST requests
 export async function POST(req: NextRequest) {

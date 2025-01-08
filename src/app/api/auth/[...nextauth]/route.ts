@@ -4,7 +4,7 @@ import sqlite3 from "sqlite3";
 import bcrypt from "bcrypt";
 
 // Initialize the database
-const db = new sqlite3.Database("/tmp/inventory.db");
+const db = new sqlite3.Database("src/database/inventory.db");
 
 interface User {
   id: number;

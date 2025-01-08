@@ -3,7 +3,7 @@ import path from "path";
 import fs from "fs";
 
 // Resolve the absolute path to the database file
-const dbPath = path.resolve("/tmp/inventory.db");
+const dbPath = path.resolve("src/database/inventory.db");
 
 // Ensure the directory for the database file exists
 const dbDir = path.dirname(dbPath);

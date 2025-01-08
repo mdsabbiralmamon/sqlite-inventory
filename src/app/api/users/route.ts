@@ -2,7 +2,7 @@ import sqlite3 from "sqlite3";
 import { NextResponse } from "next/server";
 
 // Initialize the database
-const db = new sqlite3.Database("/tmp/inventory.db");
+const db = new sqlite3.Database("src/database/inventory.db");
 
 // Handler for GET requests
 export async function GET() {
