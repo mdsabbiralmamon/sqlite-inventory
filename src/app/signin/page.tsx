@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import { signIn } from "next-auth/react"; // Import signIn
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -14,29 +15,22 @@ const SignIn = () => {
     setError(null);
 
     try {
-      const response = await fetch("/api/users/signin", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
+      // Using next-auth's signIn method to authenticate the user
+      const res = await signIn("credentials", {
+        redirect: false,  // Don't redirect automatically
+        email,
+        password,
       });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        // Redirect or handle successful login
-        alert("Login successful!");
-        router.push("/");
+      if (res?.error) {
+        setError(res.error || "Something went wrong. Please try again.");
       } else {
-        setError(data.error || "Something went wrong. Please try again.");
+        // Redirect to the dashboard on successful login
+        alert("Login successful!");
+        router.push("/dashboard");
       }
     } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message || "An error occurred. Please try again.");
-      } else {
-        setError("An error occurred. Please try again.");
-      }
+      setError(err instanceof Error ? err.message : "An error occurred.");
     }
   };
 
