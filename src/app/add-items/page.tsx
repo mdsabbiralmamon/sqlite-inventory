@@ -26,7 +26,7 @@ const AddItems = () => {
           &larr; Back
         </button>
 
-        <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">Add New Inventory Item</h1>
+        <h1 className="text-3xl font-bold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Add New Inventory Item</h1>
 
         <InventoryForm />
 
