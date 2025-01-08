@@ -18,7 +18,7 @@ export async function PUT(req: NextRequest, props: { params: Promise<{ id: strin
     );
   }
 
-  return new Promise((resolve) => {
+  return new Promise<Response>((resolve) => {
     db.run(
       "UPDATE items SET name = ?, description = ?, quantity = ? WHERE id = ?",
       [name, description, quantity, id],
@@ -38,7 +38,7 @@ export async function DELETE(req: NextRequest, props: { params: Promise<{ id: st
   const params = await props.params;
   const id = params.id;
 
-  return new Promise((resolve) => {
+  return new Promise<Response>((resolve) => {
     db.run("DELETE FROM items WHERE id = ?", [id], function (err) {
       if (err) {
         resolve(NextResponse.json({ error: err.message }, { status: 500 }));

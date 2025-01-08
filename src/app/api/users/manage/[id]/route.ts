@@ -21,7 +21,7 @@ export async function PUT(req: NextRequest) {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    return new Promise((resolve) => {
+    return new Promise<Response>((resolve) => {
       db.run(
         "UPDATE users SET name = ?, email = ?, password = ?, role = ? WHERE id = ?",
         [name, email, hashedPassword, role, id],
@@ -55,7 +55,7 @@ export async function DELETE(req: NextRequest, props: { params: Promise<{ id: st
     return NextResponse.json({ error: "User ID is required" }, { status: 400 });
   }
 
-  return new Promise((resolve) => {
+  return new Promise<Response>((resolve) => {
     db.run(
       "DELETE FROM users WHERE id = ?",
       [id],

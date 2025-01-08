@@ -6,7 +6,7 @@ const db = new sqlite3.Database("src/database/inventory.db");
 
 // Handler for GET requests
 export async function GET() {
-  return new Promise((resolve) => {
+  return new Promise<Response>((resolve) => {
     db.all("SELECT * FROM items", [], (err, rows) => {
       if (err) {
         resolve(NextResponse.json({ error: err.message }, { status: 500 }));
@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  return new Promise((resolve) => {
+  return new Promise<Response>((resolve) => {
     db.run(
       "INSERT INTO items (name, description, quantity) VALUES (?, ?, ?)",
       [name, description, quantity],

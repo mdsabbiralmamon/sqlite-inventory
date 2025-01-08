@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    return new Promise((resolve) => {
+    return new Promise<Response>((resolve) => {
       db.run(
         "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)",
         [name, email, hashedPassword, role],

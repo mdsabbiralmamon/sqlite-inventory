@@ -6,7 +6,7 @@ const db = new sqlite3.Database("src/database/inventory.db");
 
 // Handler for GET requests
 export async function GET() {
-  return new Promise((resolve) => {
+  return new Promise<Response>((resolve) => {
     db.all("SELECT * FROM users", [], (err, rows) => {
       if (err) {
         resolve(NextResponse.json({ error: err.message }, { status: 500 }));
