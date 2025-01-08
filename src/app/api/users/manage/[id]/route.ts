@@ -47,28 +47,29 @@ export async function PUT(req: NextRequest) {
 }
 
 // Handler for DELETE requests (Delete)
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
-    const { id } = params;  // Get the ID from URL params
-  
-    if (!id) {
-      return NextResponse.json({ error: "User ID is required" }, { status: 400 });
-    }
-  
-    return new Promise((resolve) => {
-      db.run(
-        "DELETE FROM users WHERE id = ?",
-        [id],
-        function (err) {
-          if (err) {
-            resolve(NextResponse.json({ error: err.message }, { status: 500 }));
-          } else if (this.changes === 0) {
-            resolve(
-              NextResponse.json({ error: "User not found" }, { status: 404 })
-            );
-          } else {
-            resolve(NextResponse.json({ message: "User deleted" }, { status: 200 }));
-          }
-        }
-      );
-    });
+export async function DELETE(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
+  const { id } = params;  // Get the ID from URL params
+
+  if (!id) {
+    return NextResponse.json({ error: "User ID is required" }, { status: 400 });
   }
+
+  return new Promise((resolve) => {
+    db.run(
+      "DELETE FROM users WHERE id = ?",
+      [id],
+      function (err) {
+        if (err) {
+          resolve(NextResponse.json({ error: err.message }, { status: 500 }));
+        } else if (this.changes === 0) {
+          resolve(
+            NextResponse.json({ error: "User not found" }, { status: 404 })
+          );
+        } else {
+          resolve(NextResponse.json({ message: "User deleted" }, { status: 200 }));
+        }
+      }
+    );
+  });
+}

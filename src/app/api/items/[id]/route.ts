@@ -5,7 +5,8 @@ import { NextRequest, NextResponse } from "next/server";
 const db = new sqlite3.Database("src/database/inventory.db");
 
 // Handler for PUT requests (Update an item by ID)
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const id = params.id;
   const { name, description, quantity } = await req.json();
 
@@ -33,7 +34,8 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 }
 
 // Handler for DELETE requests (Delete an item by ID)
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const id = params.id;
 
   return new Promise((resolve) => {
