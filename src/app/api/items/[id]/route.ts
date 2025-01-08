@@ -2,7 +2,7 @@ import sqlite3 from "sqlite3";
 import { NextRequest, NextResponse } from "next/server";
 
 // Initialize the database
-const db = new sqlite3.Database("src/database/inventory.db");
+const db = new sqlite3.Database("/tmp/inventory.db");
 
 // Handler for PUT requests (Update an item by ID)
 export async function PUT(req: NextRequest, props: { params: Promise<{ id: string }> }) {
