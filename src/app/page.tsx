@@ -30,7 +30,7 @@ const LandingPage = () => {
     <div className="min-h-screen bg-gradient-to-r from-blue-500 via-indigo-600 to-purple-700 flex items-center justify-center">
       <div className="text-center p-10 bg-white/80 rounded-lg shadow-lg backdrop-blur-md max-w-lg mx-auto transform hover:scale-105 transition duration-300">
         <h1 className="text-4xl font-extrabold mb-6 text-gray-900">
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 via-pink-500 to-red-500">
+          <span className="text-3xl font-bold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
             Welcome to SQLite Inv
           </span>
         </h1>
